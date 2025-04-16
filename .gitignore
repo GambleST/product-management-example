@@ -43,11 +43,10 @@ secrets.json
 *.tgz
 docker-compose.override.yml
 
-## Others
+# SQLite database files
 *.db
-*.DS_Store
-*.swp
-*.bak
+*.db-shm
+*.db-wal
 
 ## Local environment
 .env
