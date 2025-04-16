@@ -6,9 +6,18 @@ using ProductInformationApi.Models;
 namespace ProductInformationApi.Controllers;
 
 [ApiController]
-[Route("manufacturer")]
+[Route("manufacturers")]
 public class ManufacturerController(ProductInformationDbContext dbContext) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetManufacturers()
+    {
+        var manufacturers = await dbContext.Manufacturers
+            .Include(m => m.Products)
+            .ToListAsync();
+        return Ok(manufacturers);
+    }
+    
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetManufacturerById(Guid manufacturerId)
     {

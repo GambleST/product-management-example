@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductInformationApi.Contexts;
 using ProductInformationApi.Models;
 
@@ -9,6 +10,13 @@ namespace ProductInformationApi.Controllers;
 [Route("products")]
 public class ProductController(ProductInformationDbContext dbContext) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetProducts()
+    {
+        var products = await dbContext.Products.ToListAsync();
+        return Ok(products);
+    }
+    
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductByIdAsync(Guid id)
     {
