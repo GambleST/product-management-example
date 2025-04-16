@@ -1,0 +1,65 @@
+## .NET
+bin/
+obj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider
+.idea/
+*.sln.iml
+
+## Visual Studio Code
+.vscode/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Bb]uild/
+[Bb]uild[Ll]og.*
+
+## NuGet packages
+*.nupkg
+packages/
+# Uncomment if you have a packages folder in your repo
+# !**/packages/build/
+# !**/packages/repositories.config
+
+## Auto-generated files
+Generated_Code/
+
+## Logs
+*.log
+
+## User secrets
+secrets.json
+
+## Docker
+*.tgz
+docker-compose.override.yml
+
+## Others
+*.db
+*.DS_Store
+*.swp
+*.bak
+
+## Local environment
+.env
+.env.*
+
+## Test results
+TestResults/
+*.coverage
+*.coveragexml
+
+## EF Core Migrations snapshots
+**/*_Snapshot.cs
+
+
+
