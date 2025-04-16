@@ -1,12 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using ProductInformationApi.Contexts;
 using ProductInformationApi.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<ProductInformationDbContext>(options =>
     options.UseSqlite("Data Source=product-information.db"));
 
@@ -19,8 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
-app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseAuthorization();
 
