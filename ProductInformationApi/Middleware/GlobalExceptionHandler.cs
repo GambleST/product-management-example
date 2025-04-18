@@ -6,7 +6,8 @@ namespace ProductInformationApi.Middleware;
 
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception,
+        CancellationToken cancellationToken)
     {
         var statusCode = exception switch
         {
@@ -17,13 +18,13 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         };
 
         logger.LogError(exception, $"Exception occured: {exception.Message}");
-        
+
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
             Type = exception.GetType().Name,
             Title = ReasonPhrases.GetReasonPhrase(statusCode),
-            Detail = "An error occurred while processing your request",
+            Detail = "An error occurred while processing your request"
         };
 
         context.Response.StatusCode = problemDetails.Status.Value;

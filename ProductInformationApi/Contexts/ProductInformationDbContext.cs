@@ -7,7 +7,7 @@ public class ProductInformationDbContext(DbContextOptions<ProductInformationDbCo
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Manufacturer> Manufacturers { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

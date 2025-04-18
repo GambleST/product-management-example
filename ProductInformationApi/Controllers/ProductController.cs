@@ -5,7 +5,6 @@ using ProductInformationApi.Models;
 
 namespace ProductInformationApi.Controllers;
 
-
 [ApiController]
 [Route("products")]
 public class ProductController(ProductInformationDbContext dbContext) : ControllerBase
@@ -16,18 +15,15 @@ public class ProductController(ProductInformationDbContext dbContext) : Controll
         var products = await dbContext.Products.ToListAsync();
         return Ok(products);
     }
-    
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductByIdAsync(Guid id)
     {
         var product = await dbContext.FindAsync<Product>(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
+        if (product == null) return NotFound();
         return Ok(product);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductDto createProductDto)
     {
@@ -37,7 +33,7 @@ public class ProductController(ProductInformationDbContext dbContext) : Controll
         var createProductResult = await dbContext.AddAsync(new Product
         {
             Name = createProductDto.Name,
-            ManufacturerId = createProductDto.ManufacturerId,
+            ManufacturerId = createProductDto.ManufacturerId
         });
         await dbContext.SaveChangesAsync();
         return Created($"/products/{createProductResult.Entity.Id}", createProductResult.Entity);
