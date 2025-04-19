@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using ProductInformationApi.Models;
+using ProductInformationApi.Models.DTO;
+using ProductInformationApi.Models.Entities;
 using ProductInformationApi.Tests.Helpers;
 
 namespace ProductInformationApi.Tests.IntegrationTests;
@@ -25,7 +26,7 @@ public class ManufacturerTests(CustomWebApplicationFactory factory) : IClassFixt
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-        var manufacturers = await getResponse.Content.ReadFromJsonAsync<List<Manufacturer>>();
+        var manufacturers = await getResponse.Content.ReadFromJsonAsync<List<GetManufacturerResponseDto>>();
         Assert.NotNull(manufacturers);
         Assert.True(manufacturers!.Count >= 2);
         Assert.Contains(manufacturers, m => m.Name == "Maker One");
@@ -45,7 +46,7 @@ public class ManufacturerTests(CustomWebApplicationFactory factory) : IClassFixt
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-        var manufacturer = await getResponse.Content.ReadFromJsonAsync<Manufacturer>();
+        var manufacturer = await getResponse.Content.ReadFromJsonAsync<GetManufacturerResponseDto>();
         Assert.NotNull(manufacturer);
         Assert.Equal("Test Co", manufacturer!.Name);
     }
@@ -85,6 +86,13 @@ public class ManufacturerTests(CustomWebApplicationFactory factory) : IClassFixt
     }
 
     [Fact]
+    public async Task GetProductsByManufacturerId_ReturnsNotFound_WhenManufacturerNotExists()
+    {
+        var response = await _client.GetAsync($"/manufacturers/{Guid.NewGuid()}/products");
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task PostManufacturer_CreatesManufacturer_WhenValid()
     {
         var request = new { name = "New Manufacturer" };
@@ -93,7 +101,7 @@ public class ManufacturerTests(CustomWebApplicationFactory factory) : IClassFixt
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        var created = await response.Content.ReadFromJsonAsync<Manufacturer>();
+        var created = await response.Content.ReadFromJsonAsync<GetManufacturerResponseDto>();
         Assert.NotNull(created);
         Assert.Equal("New Manufacturer", created!.Name);
         Assert.NotEqual(Guid.Empty, created.Id);

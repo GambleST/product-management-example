@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProductInformationApi.Models;
+using ProductInformationApi.Models.Entities;
 
 namespace ProductInformationApi.Contexts;
 

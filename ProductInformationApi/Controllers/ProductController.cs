@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductInformationApi.Contexts;
-using ProductInformationApi.Models;
+using ProductInformationApi.Models.DTO;
+using ProductInformationApi.Models.Entities;
 
 namespace ProductInformationApi.Controllers;
 
@@ -12,14 +13,29 @@ public class ProductController(ProductInformationDbContext dbContext) : Controll
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var products = await dbContext.Products.ToListAsync();
+        var products = await dbContext.Products.Include(p => p.Manufacturer).Select(p => new GetProductResponseDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            ManufacturerId = p.ManufacturerId,
+            ManufacturerName = p.Manufacturer.Name
+        }).ToListAsync();
         return Ok(products);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductByIdAsync(Guid id)
     {
-        var product = await dbContext.FindAsync<Product>(id);
+        var product = await dbContext.Products.Include(p => p.Manufacturer)
+            .Select(p => new GetProductResponseDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ManufacturerId = p.ManufacturerId,
+                ManufacturerName = p.Manufacturer.Name
+            })
+            .FirstOrDefaultAsync(p => p.Id == id);
+
         if (product == null) return NotFound();
         return Ok(product);
     }
@@ -27,15 +43,33 @@ public class ProductController(ProductInformationDbContext dbContext) : Controll
     [HttpPost]
     public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductDto createProductDto)
     {
-        // TODO
-        // Check for duplicate names
-        // 
-        var createProductResult = await dbContext.AddAsync(new Product
+        var manufacturerIsValid = await dbContext.Manufacturers.AnyAsync(m => m.Id == createProductDto.ManufacturerId);
+        if (!manufacturerIsValid)
+            return NotFound(new ValidationProblemDetails(new Dictionary<string, string[]>
+            {
+                { "manufacturerId", ["Manufacturer does not exist."] }
+            }));
+
+        var newProduct = new Product
         {
             Name = createProductDto.Name,
             ManufacturerId = createProductDto.ManufacturerId
-        });
+        };
+        await dbContext.AddAsync(newProduct);
         await dbContext.SaveChangesAsync();
-        return Created($"/products/{createProductResult.Entity.Id}", createProductResult.Entity);
+
+        var createdProduct = await dbContext.Products
+            .Include(p => p.Manufacturer)
+            .Where(p => p.Id == newProduct.Id)
+            .Select(p => new GetProductResponseDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ManufacturerId = p.ManufacturerId,
+                ManufacturerName = p.Manufacturer.Name
+            })
+            .FirstOrDefaultAsync();
+
+        return Created($"/products/{createdProduct!.Id}", createdProduct);
     }
 }

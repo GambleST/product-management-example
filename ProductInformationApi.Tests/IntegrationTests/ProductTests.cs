@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using ProductInformationApi.Models;
+using ProductInformationApi.Models.DTO;
+using ProductInformationApi.Models.Entities;
 using ProductInformationApi.Tests.Helpers;
 
 namespace ProductInformationApi.Tests.IntegrationTests;
@@ -38,7 +39,7 @@ public class ProductTests(CustomWebApplicationFactory factory) : IClassFixture<C
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var products = await response.Content.ReadFromJsonAsync<List<Product>>();
+        var products = await response.Content.ReadFromJsonAsync<List<GetProductResponseDto>>();
         Assert.NotNull(products);
         Assert.True(products!.Count >= 2);
 
@@ -66,7 +67,7 @@ public class ProductTests(CustomWebApplicationFactory factory) : IClassFixture<C
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-        var product = await getResponse.Content.ReadFromJsonAsync<Product>();
+        var product = await getResponse.Content.ReadFromJsonAsync<GetProductResponseDto>();
         Assert.NotNull(product);
         Assert.Equal("Single Product", product!.Name);
         Assert.Equal(manufacturer.Id, product.ManufacturerId);
@@ -99,7 +100,7 @@ public class ProductTests(CustomWebApplicationFactory factory) : IClassFixture<C
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        var created = await response.Content.ReadFromJsonAsync<Product>();
+        var created = await response.Content.ReadFromJsonAsync<GetProductResponseDto>();
         Assert.NotNull(created);
         Assert.Equal("New Gadget", created!.Name);
         Assert.Equal(manufacturer.Id, created.ManufacturerId);
@@ -119,6 +120,6 @@ public class ProductTests(CustomWebApplicationFactory factory) : IClassFixture<C
         var response = await _client.PostAsJsonAsync("/products", request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

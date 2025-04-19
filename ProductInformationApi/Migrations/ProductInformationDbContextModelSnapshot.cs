@@ -17,39 +17,7 @@ namespace ProductInformationApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
 
-            modelBuilder.Entity("ProductInformationApi.Models.Manufacturer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Manufacturers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("5309b913-7cb5-48b4-b32d-2188da5ef21a"),
-                            Name = "Apple Inc."
-                        },
-                        new
-                        {
-                            Id = new Guid("c0db3ed1-80dc-491f-812a-84bdd749ba03"),
-                            Name = "Sony Corporation"
-                        },
-                        new
-                        {
-                            Id = new Guid("de29706e-27e0-4765-aeea-835cc605b4f3"),
-                            Name = "Dell Technologies"
-                        });
-                });
-
-            modelBuilder.Entity("ProductInformationApi.Models.Product", b =>
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,13 +75,47 @@ namespace ProductInformationApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProductInformationApi.Models.Product", b =>
+            modelBuilder.Entity("ProductInformationApi.Models.Manufacturer", b =>
                 {
-                    b.HasOne("ProductInformationApi.Models.Manufacturer", null)
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Manufacturers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5309b913-7cb5-48b4-b32d-2188da5ef21a"),
+                            Name = "Apple Inc."
+                        },
+                        new
+                        {
+                            Id = new Guid("c0db3ed1-80dc-491f-812a-84bdd749ba03"),
+                            Name = "Sony Corporation"
+                        },
+                        new
+                        {
+                            Id = new Guid("de29706e-27e0-4765-aeea-835cc605b4f3"),
+                            Name = "Dell Technologies"
+                        });
+                });
+
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Product", b =>
+                {
+                    b.HasOne("ProductInformationApi.Models.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Manufacturer");
                 });
 
             modelBuilder.Entity("ProductInformationApi.Models.Manufacturer", b =>
