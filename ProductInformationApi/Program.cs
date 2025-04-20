@@ -13,7 +13,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<ProductInformationDbContext>(options =>
-    options.UseSqlite("Data Source=product-information.db"));
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 34)) // or whatever version you’ll use in Docker
+    ));
 
 var app = builder.Build();
 

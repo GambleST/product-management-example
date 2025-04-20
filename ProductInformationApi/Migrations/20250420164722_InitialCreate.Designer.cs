@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductInformationApi.Contexts;
@@ -11,24 +12,28 @@ using ProductInformationApi.Contexts;
 namespace ProductInformationApi.Migrations
 {
     [DbContext(typeof(ProductInformationDbContext))]
-    [Migration("20250416132711_InitialCreate")]
+    [Migration("20250420164722_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.15")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ProductInformationApi.Models.Manufacturer", b =>
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Manufacturer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -52,18 +57,18 @@ namespace ProductInformationApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProductInformationApi.Models.Product", b =>
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ManufacturerId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -110,16 +115,18 @@ namespace ProductInformationApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProductInformationApi.Models.Product", b =>
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Product", b =>
                 {
-                    b.HasOne("ProductInformationApi.Models.Manufacturer", null)
+                    b.HasOne("ProductInformationApi.Models.Entities.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Manufacturer");
                 });
 
-            modelBuilder.Entity("ProductInformationApi.Models.Manufacturer", b =>
+            modelBuilder.Entity("ProductInformationApi.Models.Entities.Manufacturer", b =>
                 {
                     b.Navigation("Products");
                 });
