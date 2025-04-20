@@ -1,23 +1,21 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿# Use the official .NET SDK image to build and publish
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 80
+EXPOSE 443
 
+# Use the SDK image to build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ProductInformationApi/ProductInformationApi.csproj", "ProductInformationApi/"]
 RUN dotnet restore "ProductInformationApi/ProductInformationApi.csproj"
 COPY . .
 WORKDIR "/src/ProductInformationApi"
-RUN dotnet build "./ProductInformationApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "ProductInformationApi.csproj" -c Release -o /app/build
+RUN dotnet publish "ProductInformationApi.csproj" -c Release -o /app/publish
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ProductInformationApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
+# Final runtime image
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "ProductInformationApi.dll"]
