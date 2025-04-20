@@ -25,6 +25,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    // Automatically migrate database to make it easier for you guys - definitely not recommended for production!
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ProductInformationDbContext>();
+    db.Database.Migrate();
 }
 
 app.UseExceptionHandler();
