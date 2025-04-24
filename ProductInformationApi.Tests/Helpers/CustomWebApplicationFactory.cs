@@ -13,7 +13,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     // Dedicated Test database
     private readonly MySqlContainer _mySqlContainer = new MySqlBuilder()
         .WithDatabase("productdb")
-        .WithUsername("tla")
+        .WithUsername("mainuser")
         .WithPassword("supersecurepassword")
         .Build();
 

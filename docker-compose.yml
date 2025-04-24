@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_DATABASE: productdb
       MYSQL_ROOT_PASSWORD: superdupersecurepassword
-      MYSQL_USER: tla
+      MYSQL_USER: mainuser
       MYSQL_PASSWORD: supersecurepassword
     ports:
       - "3306:3306"
@@ -22,7 +22,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
-      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=productdb;User=tla;Password=supersecurepassword;"
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=productdb;User=mainuser;Password=supersecurepassword;"
     depends_on:
       - mysql
 
