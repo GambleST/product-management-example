@@ -1,7 +1,7 @@
 # 🧾 Product Information API
 
 A clean and well-structured ASP.NET Core Web API project for managing **Products** and **Manufacturers**, built using *
-*.NET 8**, **EF Core**, **MySQL**, and **Docker**, with automated integration tests using **Testcontainers**.
+**.NET 8**, **EF Core**, **MySQL**, and **Docker**, with automated integration tests using **Testcontainers**.
 
 ---
 
@@ -120,7 +120,7 @@ Global exception handler middleware provides clean, consistent error messages:
 
 ## 🔮 Future Development
 
-**TLA — Iterative work to do:**
+**Iterative work to be considered:**
 
 - AutoMapper integration for cleaner DTO mapping
 - Finalise stack trace information on failed requests
