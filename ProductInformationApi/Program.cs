@@ -15,7 +15,14 @@ builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<ProductInformationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 34)) // or whatever version you’ll use in Docker
+        new MySqlServerVersion(new Version(8, 0, 34)), // or whatever version you’ll use in Docker
+        optionsBuilder =>
+        {
+            optionsBuilder.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null);
+        } 
     ));
 
 var app = builder.Build();
